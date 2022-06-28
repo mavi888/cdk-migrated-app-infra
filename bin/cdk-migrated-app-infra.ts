@@ -14,9 +14,14 @@ const cognito = new CognitoStack(app, `${config.stage}-CognitoStack`, {
 
 const backendApp = new BackendAppStack(app, `${config.stage}-BackendAppStack`, {
 	stage: config.stage,
+	userPoolClientId: cognito.userPoolClientId.value,
+	userPoolId: cognito.userPoolId.value,
 });
 
 const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
 	stage: config.stage,
 	serverURL: backendApp.functionUrl.value,
+	identityPoolId: cognito.identityPoolId.value,
+	userPoolClientId: cognito.userPoolClientId.value,
+	userPoolId: cognito.userPoolId.value,
 });

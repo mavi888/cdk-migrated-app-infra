@@ -15,6 +15,7 @@
     "dev": "concurrently \"npm run backend\" \"npm run start --prefix client\""
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.118.1",
     "@aws-sdk/client-secrets-manager": "^3.118.1",
     "@opentelemetry/api": "^1.0.4",
     "@opentelemetry/auto-instrumentations-node": "^0.28.0",
@@ -23,6 +24,7 @@
     "@opentelemetry/sdk-node": "^0.28.0",
     "@opentelemetry/semantic-conventions": "^1.2.0",
     "async": "^3.2.3",
+    "aws-jwt-verify": "^3.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "cookie-parser": "^1.4.6",
