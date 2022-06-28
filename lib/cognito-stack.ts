@@ -17,6 +17,7 @@ import {
 
 interface CognitoStackProps extends StackProps {
 	readonly stage: string;
+	readonly storageBucketARN: string;
 }
 
 export class CognitoStack extends Stack {
@@ -56,6 +57,32 @@ export class CognitoStack extends Stack {
 			}
 		);
 
+		const giveReadAccessS3 = new PolicyDocument({
+			statements: [
+				new PolicyStatement({
+					resources: [
+						props.storageBucketARN,
+						`${props.storageBucketARN}/public/*`,
+					],
+					actions: ['s3:GetObject'],
+					effect: Effect.ALLOW,
+				}),
+			],
+		});
+
+		const giveReadWriteAccessS3 = new PolicyDocument({
+			statements: [
+				new PolicyStatement({
+					resources: [
+						props.storageBucketARN,
+						`${props.storageBucketARN}/public/*`,
+					],
+					actions: ['s3:GetObject', 's3:PutObject', 's3:DeleteObject'],
+					effect: Effect.ALLOW,
+				}),
+			],
+		});
+
 		const isAnonymousCognitoGroupRole = new Role(
 			this,
 			`${props.stage}-AnonymousGroupRoleReactShopApp`,
@@ -73,6 +100,9 @@ export class CognitoStack extends Stack {
 					},
 					'sts:AssumeRoleWithWebIdentity'
 				),
+				inlinePolicies: {
+					GiveReadAccess: giveReadAccessS3,
+				},
 			}
 		);
 
@@ -93,6 +123,9 @@ export class CognitoStack extends Stack {
 					},
 					'sts:AssumeRoleWithWebIdentity'
 				),
+				inlinePolicies: {
+					GiveReadWriteAccessS3: giveReadWriteAccessS3,
+				},
 			}
 		);
 
