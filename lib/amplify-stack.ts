@@ -15,6 +15,7 @@ interface AmplifyStackProps extends StackProps {
 	readonly userPoolClientId: string;
 	readonly identityPoolId: string;
 	readonly bucketName: string;
+	readonly distributionDomainName: string;
 }
 
 export class AmplifyStack extends Stack {
@@ -37,6 +38,7 @@ export class AmplifyStack extends Stack {
 				USER_POOL_ID: props.userPoolId,
 				USER_POOL_CLIENT_ID: props.userPoolClientId,
 				BUCKET_NAME: props.bucketName,
+				DISTRIBUTION_NAME: props.distributionDomainName,
 			},
 		});
 

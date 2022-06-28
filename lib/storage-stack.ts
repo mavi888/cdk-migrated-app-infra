@@ -1,6 +1,8 @@
 import { Stack, StackProps, CfnOutput, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Bucket, HttpMethods } from 'aws-cdk-lib/aws-s3';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
+import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 
 interface StorageStackProps extends StackProps {
 	readonly stage: string;
@@ -9,6 +11,7 @@ interface StorageStackProps extends StackProps {
 export class StorageStack extends Stack {
 	public readonly bucketName: CfnOutput;
 	public readonly bucketARN: CfnOutput;
+	public readonly distributionDomainName: CfnOutput;
 
 	constructor(scope: Construct, id: string, props: StorageStackProps) {
 		super(scope, id, props);
@@ -37,12 +40,26 @@ export class StorageStack extends Stack {
 			],
 		});
 
+		const distribution = new Distribution(
+			this,
+			`${props.stage}-BackendAppDistribution`,
+			{
+				defaultBehavior: {
+					origin: new S3Origin(bucket),
+				},
+			}
+		);
+
 		this.bucketARN = new CfnOutput(this, 'BucketARN', {
 			value: bucket.bucketArn,
 		});
 
 		this.bucketName = new CfnOutput(this, 'BucketName', {
 			value: bucket.bucketName,
+		});
+
+		this.distributionDomainName = new CfnOutput(this, 'Distribution', {
+			value: distribution.distributionDomainName,
 		});
 	}
 }

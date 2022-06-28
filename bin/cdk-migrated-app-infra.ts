@@ -31,4 +31,5 @@ const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
 	userPoolClientId: cognito.userPoolClientId.value,
 	userPoolId: cognito.userPoolId.value,
 	bucketName: storage.bucketName.value,
+	distributionDomainName: storage.distributionDomainName.value,
 });
