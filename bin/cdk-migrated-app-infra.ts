@@ -6,6 +6,7 @@ import * as config from '../config.json';
 import { AmplifyStack } from '../lib/amplify-stack';
 import { CognitoStack } from '../lib/cognito-stack';
 import { StorageStack } from '../lib/storage-stack';
+import { ObservabilityStack } from '../lib/observability-stack';
 
 const app = new cdk.App();
 
@@ -33,3 +34,13 @@ const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
 	bucketName: storage.bucketName.value,
 	distributionDomainName: storage.distributionDomainName.value,
 });
+
+const observability = new ObservabilityStack(
+	app,
+	`${config.stage}-MERNObservabilityStack`,
+	{
+		stage: config.stage,
+		amplifyAppId: amplifyApp.amplifyAppId.value,
+		functionName: backendApp.functionName.value,
+	}
+);

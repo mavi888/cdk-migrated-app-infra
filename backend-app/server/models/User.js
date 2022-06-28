@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10;
-const jwt = require('jsonwebtoken');
-const moment = require('moment');
 
 const userSchema = mongoose.Schema({
 	name: {
@@ -61,32 +59,6 @@ userSchema.pre('save', function (next) {
 		next();
 	}
 });
-
-userSchema.methods.comparePassword = async function (plainPassword) {
-	const isMatch = await bcrypt.compare(plainPassword, this.password);
-	return isMatch;
-};
-
-userSchema.methods.generateToken = async function () {
-	var user = this;
-	var token = jwt.sign(user._id.toHexString(), 'secret');
-	var oneHour = moment().add(1, 'hour').valueOf();
-
-	user.tokenExp = oneHour;
-	user.token = token;
-	return await user.save();
-};
-
-userSchema.statics.findByToken = function (token, cb) {
-	var user = this;
-
-	jwt.verify(token, 'secret', function (err, decode) {
-		user.findOne({ _id: decode, token: token }, function (err, user) {
-			if (err) return cb(err);
-			cb(null, user);
-		});
-	});
-};
 
 userSchema.statics.findByEmail = function (email, cb) {
 	var user = this;
