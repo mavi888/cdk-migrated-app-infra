@@ -1,4 +1,11 @@
 *.js
+
+!backend-app/server/*
+!backend-app/server/*/*
+
+backend-app/server/config/dev.js
+
+
 !jest.config.js
 *.d.ts
 node_modules
@@ -6,3 +13,6 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+.DS_Store
+config.json
+.vscode/settings.json
