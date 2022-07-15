@@ -5,6 +5,7 @@
 
 backend-app/server/config/dev.js
 
+!edge-functions/*
 
 !jest.config.js
 *.d.ts
