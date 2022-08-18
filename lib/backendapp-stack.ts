@@ -29,7 +29,7 @@ export class BackendAppStack extends Stack {
 		const layerLambdaAdapter = LayerVersion.fromLayerVersionArn(
 			this,
 			'LambdaAdapterLayerX86',
-			`arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerX86:2`
+			`arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerX86:3`
 		);
 
 		// Lambda
@@ -42,7 +42,7 @@ export class BackendAppStack extends Stack {
 				handler: 'run.sh',
 				environment: {
 					AWS_LAMBDA_EXEC_WRAPPER: '/opt/bootstrap',
-					RUST_LOG: 'info',
+					RUST_LOG: 'debug',
 					REGION: this.region,
 					USER_POOL_ID: props.userPoolId,
 					USER_POOL_CLIENT_ID: props.userPoolClientId,
