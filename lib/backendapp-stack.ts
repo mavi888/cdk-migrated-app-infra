@@ -29,7 +29,7 @@ export class BackendAppStack extends Stack {
 		const layerLambdaAdapter = LayerVersion.fromLayerVersionArn(
 			this,
 			'LambdaAdapterLayerX86',
-			`arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerX86:2`
+			`arn:aws:lambda:${this.region}:753240598075:layer:LambdaAdapterLayerX86:3`
 		);
 
 		// Lambda
