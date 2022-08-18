@@ -44,6 +44,10 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // SET UP ROUTES
+
+app.get('/', (req, res) => {
+	res.send('Hi there!');
+});
 app.use('/api/users', require('./routes/users'));
 app.use('/api/product', require('./routes/product'));
 app.use('/api/store', require('./routes/store'));

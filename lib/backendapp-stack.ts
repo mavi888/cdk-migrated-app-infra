@@ -42,7 +42,7 @@ export class BackendAppStack extends Stack {
 				handler: 'run.sh',
 				environment: {
 					AWS_LAMBDA_EXEC_WRAPPER: '/opt/bootstrap',
-					RUST_LOG: 'debug',
+					RUST_LOG: 'info',
 					REGION: this.region,
 					USER_POOL_ID: props.userPoolId,
 					USER_POOL_CLIENT_ID: props.userPoolClientId,
