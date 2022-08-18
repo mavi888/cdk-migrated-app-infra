@@ -1,0 +1,10 @@
+{
+	"stage": "dev",
+	"frontend": {
+		"repository_name": "XXX",
+		"owner": "XXX"
+	},
+	"backend": {
+		"mongouri-secret-arn": "XXXX"
+	}
+}
