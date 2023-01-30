@@ -1,11 +1,11 @@
 # CDK MERN MIGRATED APP
 
 _Infrastructure as code framework used_: AWS CDK
-_AWS Services used_: AWS Lambda, AWS Amplify, Amazon Cognito, AWS S3, Amazon CloudFront, Amazon CloudWatch
+_AWS Services used_: AWS AppRunner (previously AWS Lambda), AWS Amplify, Amazon Cognito, AWS S3, Amazon CloudFront, Amazon CloudWatch
 
 ## Summary of the demo
 
-In this demo you will see how to migrate an existing MERN application to serverless using AWS Lambda
+In this demo you will see how to migrate an existing MERN application to serverless using a serverless stack.
 
 This demo is part of a video posted in FooBar Serverless channel. You can check the video to see the whole demo.
 
