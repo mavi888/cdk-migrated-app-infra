@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { BackendAppStack } from '../lib/backendapp-stack';
 import * as config from '../config.json';
 import { AmplifyStack } from '../lib/amplify-stack';
 import { CognitoStack } from '../lib/cognito-stack';
 import { StorageStack } from '../lib/storage-stack';
 import { ObservabilityStack } from '../lib/observability-stack';
+import { AppRunnerStack } from '../lib/apprunner-stack';
 
 const app = new cdk.App();
 
@@ -19,7 +19,7 @@ const cognito = new CognitoStack(app, `${config.stage}-CognitoStack`, {
 	storageBucketARN: storage.bucketARN.value,
 });
 
-const backendApp = new BackendAppStack(app, `${config.stage}-BackendAppStack`, {
+const appRunner = new AppRunnerStack(app, `${config.stage}-AppRunnerStack`, {
 	stage: config.stage,
 	userPoolClientId: cognito.userPoolClientId.value,
 	userPoolId: cognito.userPoolId.value,
@@ -27,7 +27,7 @@ const backendApp = new BackendAppStack(app, `${config.stage}-BackendAppStack`, {
 
 const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
 	stage: config.stage,
-	serverURL: backendApp.functionUrl.value,
+	serverURL: `https://${appRunner.url.value}/`,
 	identityPoolId: cognito.identityPoolId.value,
 	userPoolClientId: cognito.userPoolClientId.value,
 	userPoolId: cognito.userPoolId.value,
@@ -41,6 +41,6 @@ const observability = new ObservabilityStack(
 	{
 		stage: config.stage,
 		amplifyAppId: amplifyApp.amplifyAppId.value,
-		functionName: backendApp.functionName.value,
+		functionName: appRunner.serviceName.value,
 	}
 );
