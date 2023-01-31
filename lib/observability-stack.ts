@@ -5,7 +5,9 @@ import { Dashboard, GraphWidget, Metric } from 'aws-cdk-lib/aws-cloudwatch';
 interface ObservabilityStackProps extends StackProps {
 	readonly stage: string;
 	readonly amplifyAppId: string;
-	readonly functionName: string;
+	readonly serviceName: string;
+	readonly serviceId: string;
+	readonly serviceArn: string;
 }
 
 export class ObservabilityStack extends Stack {
@@ -85,101 +87,85 @@ export class ObservabilityStack extends Stack {
 		//Widgets related to the Lambda function
 		dashboard.addWidgets(
 			new GraphWidget({
-				title: 'AWS Function URL 4xx/5xx errors (sum)',
+				title: 'AppRunner Requests and Responses',
 				width: 12,
 				left: [
 					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'Url5xxCount',
+						namespace: 'AWS/AppRunner',
+						metricName: 'Requests',
 						dimensionsMap: {
-							FunctionName: props.functionName,
+							ServiceName: props.serviceName,
+							ServiceID: props.serviceId,
 						},
 						statistic: 'sum',
-						label: 'Sum 5xx Errors',
+						label: 'Request',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'Url4xxCount',
+						namespace: 'AWS/AppRunner',
+						metricName: '2xxStatusResponses',
 						dimensionsMap: {
-							FunctionName: props.functionName,
+							ServiceName: props.serviceName,
+							ServiceID: props.serviceId,
 						},
 						statistic: 'sum',
-						label: 'Sum 4xx Errors',
+						label: '2xxStatusResponses',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/AppRunner',
+						metricName: '4xxStatusResponses',
+						dimensionsMap: {
+							ServiceName: props.serviceName,
+							ServiceID: props.serviceId,
+						},
+						statistic: 'sum',
+						label: '4xxStatusResponses',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/AppRunner',
+						metricName: '5xxStatusResponses',
+						dimensionsMap: {
+							ServiceName: props.serviceName,
+							ServiceID: props.serviceId,
+						},
+						statistic: 'sum',
+						label: '5xxStatusResponses',
 						period: Duration.minutes(1),
 					}),
 				],
 			}),
 			new GraphWidget({
-				title: 'AWS Function Errors (sum)',
+				title: 'AppRunner active Instances',
 				width: 12,
 				left: [
 					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'Errors',
+						namespace: 'AWS/AppRunner',
+						metricName: 'ActiveInstances',
 						dimensionsMap: {
-							FunctionName: props.functionName,
+							ServiceName: props.serviceName,
+							ServiceID: props.serviceId,
 						},
 						statistic: 'sum',
-						label: 'Sum',
+						label: 'Sum Active instances',
 						period: Duration.minutes(1),
 					}),
 				],
 			}),
 			new GraphWidget({
-				title: 'AWS Function URL Request Duration and Latency (p99)',
+				title: 'AppRunner Request Latency (p99)',
 				width: 12,
 				left: [
 					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'UrlRequestLatency',
+						namespace: 'AWS/AppRunner',
+						metricName: 'RequestLatency',
 						dimensionsMap: {
-							FunctionName: props.functionName,
+							ServiceName: props.serviceName,
+							ServiceID: props.serviceId,
 						},
 						statistic: 'p99',
 						label: 'p99 Latency',
-						period: Duration.minutes(1),
-					}),
-					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'Duration',
-						dimensionsMap: {
-							FunctionName: props.functionName,
-						},
-						statistic: 'p99',
-						label: 'p99 Duration',
-						period: Duration.minutes(1),
-					}),
-				],
-			}),
-			new GraphWidget({
-				title: 'AWS Function Invocations (sum)',
-				width: 12,
-				left: [
-					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'Invocations',
-						dimensionsMap: {
-							FunctionName: props.functionName,
-						},
-						statistic: 'sum',
-						label: 'Sum',
-						period: Duration.minutes(1),
-					}),
-				],
-			}),
-			new GraphWidget({
-				title: 'AWS Function Concurrent executions (Max)',
-				width: 12,
-				left: [
-					new Metric({
-						namespace: 'AWS/Lambda',
-						metricName: 'ConcurrentExecutions',
-						dimensionsMap: {
-							FunctionName: props.functionName,
-						},
-						statistic: 'max',
-						label: 'Max',
 						period: Duration.minutes(1),
 					}),
 				],

@@ -41,6 +41,8 @@ const observability = new ObservabilityStack(
 	{
 		stage: config.stage,
 		amplifyAppId: amplifyApp.amplifyAppId.value,
-		functionName: appRunner.serviceName.value,
+		serviceName: appRunner.serviceName.value,
+		serviceArn: appRunner.serviceArn.value,
+		serviceId: appRunner.serviceId.value,
 	}
 );

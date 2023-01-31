@@ -1,9 +1,7 @@
 import { Stack, StackProps, CfnOutput, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as config from '../config.json';
-import * as apprunner from '@aws-cdk/aws-apprunner-alpha';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
-import { Cpu } from '@aws-cdk/aws-apprunner-alpha';
 import {
 	Effect,
 	PolicyDocument,
@@ -11,6 +9,8 @@ import {
 	Role,
 	ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam';
+
+import { CfnService } from 'aws-cdk-lib/aws-apprunner';
 
 interface AppRunnerStackProps extends StackProps {
 	readonly stage: string;
@@ -21,73 +21,99 @@ interface AppRunnerStackProps extends StackProps {
 export class AppRunnerStack extends Stack {
 	public readonly url: CfnOutput;
 	public readonly serviceName: CfnOutput;
+	public readonly serviceArn: CfnOutput;
+	public readonly serviceId: CfnOutput;
 
 	constructor(scope: Construct, id: string, props: AppRunnerStackProps) {
 		super(scope, id, props);
 
 		const mongoURISecret = Secret.fromSecretNameV2(this, 'secret', 'mongoURI');
 
-		/*const policyDoc = new PolicyDocument({
+		const giveReadAccessToSecretPolicy = new PolicyDocument({
 			statements: [
 				new PolicyStatement({
-					resources: [],
-					actions: [],
+					resources: [config.backend['mongouri-secret-arn']],
+					actions: ['secretsmanager:GetSecretValue'],
 					effect: Effect.ALLOW,
 				}),
 			],
-		});*/
+		});
 
-		/*const instanceRole = new Role(
+		const instanceRole = new Role(
 			this,
 			`${props.stage}-instanceAppRunnerRole`,
 			{
 				description: 'Default role for app runner instances',
-				assumedBy: new ServicePrincipal('ec2.amazonaws.com'),
+				assumedBy: new ServicePrincipal('tasks.apprunner.amazonaws.com'),
 				inlinePolicies: {
-					GiveReadAccess: policyDoc,
+					GiveReadAccessToSecret: giveReadAccessToSecretPolicy,
 				},
 			}
-		);*/
+		);
 
-		const appRunnerService = new apprunner.Service(
+		const appRunnerService1 = new CfnService(
 			this,
-			`${props.stage}-AppRunnerService`,
+			`${props.stage}-AppRunnerService1`,
 			{
-				source: apprunner.Source.fromGitHub({
-					repositoryUrl: config.backend.repository_url,
-					branch: 'main',
-					configurationSource: apprunner.ConfigurationSourceType.API,
-					codeConfigurationValues: {
-						runtime: apprunner.Runtime.NODEJS_16,
-						port: '8080',
-						startCommand: 'npm run backend',
-						buildCommand: 'npm i',
-						environmentVariables: {
-							USER_POOL_ID: props.userPoolId,
-							USER_POOL_CLIENT_ID: props.userPoolClientId,
+				serviceName: `${props.stage}-AppRunnerService1`,
+				sourceConfiguration: {
+					authenticationConfiguration: {
+						connectionArn: config.backend.apprunner_connectionARN,
+					},
+					autoDeploymentsEnabled: true,
+					codeRepository: {
+						codeConfiguration: {
+							codeConfigurationValues: {
+								startCommand: 'npm run backend',
+								buildCommand: 'npm i',
+								port: '8080',
+								runtime: 'NODEJS_16',
+								runtimeEnvironmentSecrets: [
+									{
+										name: 'mongoURI',
+										value: mongoURISecret.secretArn,
+									},
+								],
+								runtimeEnvironmentVariables: [
+									{
+										name: 'USER_POOL_ID',
+										value: props.userPoolId,
+									},
+									{
+										name: 'USER_POOL_CLIENT_ID',
+										value: props.userPoolClientId,
+									},
+								],
+							},
+							configurationSource: 'API',
 						},
-						environmentSecrets: {
-							mongoURI: apprunner.Secret.fromSecretsManager(mongoURISecret),
+						repositoryUrl: config.backend.repository_url,
+						sourceCodeVersion: {
+							type: 'BRANCH',
+							value: 'main',
 						},
 					},
-					connection: apprunner.GitHubConnection.fromConnectionArn(
-						config.backend.apprunner_connectionARN
-					),
-					// NO AUTO DEPLOYMENTS IN ALPHA VERSION!
-				}),
-
-				//cpu: apprunner.Cpu.TWO_VCPU,
-				//memory: apprunner.Memory.THREE_GB,
-				//instanceRole: instanceRole,
+				},
+				instanceConfiguration: {
+					instanceRoleArn: instanceRole.roleArn,
+				},
 			}
 		);
 
 		this.url = new CfnOutput(this, 'ServiceURL', {
-			value: appRunnerService.serviceUrl,
+			value: appRunnerService1.attrServiceUrl,
 		});
 
 		this.serviceName = new CfnOutput(this, 'ServiceName', {
-			value: appRunnerService.serviceName,
+			value: `${props.stage}-AppRunnerService1`,
+		});
+
+		this.serviceArn = new CfnOutput(this, 'ServiceArn', {
+			value: appRunnerService1.attrServiceArn,
+		});
+
+		this.serviceId = new CfnOutput(this, 'serviceId', {
+			value: appRunnerService1.attrServiceId,
 		});
 	}
 }
