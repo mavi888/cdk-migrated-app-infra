@@ -1,10 +1,12 @@
 {
 	"stage": "dev",
 	"frontend": {
-		"repository_name": "XXX",
-		"owner": "XXX"
+		"repository_name": "ABC",
+		"owner": "owner"
 	},
 	"backend": {
-		"mongouri-secret-arn": "XXXX"
+		"repository_url": "https://github.com/<owner>/<repo>",
+		"branch": "main",
+		"apprunner_connectionARN": "ARN"
 	}
 }

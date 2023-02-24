@@ -115,7 +115,7 @@ export class AppRunnerStack extends Stack {
 						repositoryUrl: config.backend.repository_url,
 						sourceCodeVersion: {
 							type: 'BRANCH',
-							value: 'dynamodb-migration',
+							value: config.backend.branch,
 						},
 					},
 				},
