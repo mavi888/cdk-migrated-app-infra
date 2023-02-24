@@ -16,6 +16,8 @@ interface AppRunnerStackProps extends StackProps {
 	readonly stage: string;
 	readonly userPoolId: string;
 	readonly userPoolClientId: string;
+	readonly dynamodbTableName: string;
+	readonly dynamodbTableArn: string;
 }
 
 export class AppRunnerStack extends Stack {
@@ -39,6 +41,30 @@ export class AppRunnerStack extends Stack {
 			],
 		});
 
+		const giveCRUDAccessToDynamoTable = new PolicyDocument({
+			statements: [
+				new PolicyStatement({
+					resources: [
+						props.dynamodbTableArn,
+						`${props.dynamodbTableArn}/index/*`,
+					],
+					actions: [
+						'dynamodb:BatchGetItem',
+						'dynamodb:BatchWriteItem',
+						'dynamodb:ConditionCheckItem',
+						'dynamodb:PutItem',
+						'dynamodb:DescribeTable',
+						'dynamodb:DeleteItem',
+						'dynamodb:GetItem',
+						'dynamodb:Scan',
+						'dynamodb:Query',
+						'dynamodb:UpdateItem',
+					],
+					effect: Effect.ALLOW,
+				}),
+			],
+		});
+
 		const instanceRole = new Role(
 			this,
 			`${props.stage}-instanceAppRunnerRole`,
@@ -47,6 +73,7 @@ export class AppRunnerStack extends Stack {
 				assumedBy: new ServicePrincipal('tasks.apprunner.amazonaws.com'),
 				inlinePolicies: {
 					GiveReadAccessToSecret: giveReadAccessToSecretPolicy,
+					GiveCRUDAccessToTable: giveCRUDAccessToDynamoTable,
 				},
 			}
 		);
@@ -55,7 +82,7 @@ export class AppRunnerStack extends Stack {
 			this,
 			`${props.stage}-AppRunnerService1`,
 			{
-				serviceName: `${props.stage}-AppRunnerService1`,
+				serviceName: `${props.stage}-AppRunnerService`,
 				sourceConfiguration: {
 					authenticationConfiguration: {
 						connectionArn: config.backend.apprunner_connectionARN,
@@ -64,16 +91,10 @@ export class AppRunnerStack extends Stack {
 					codeRepository: {
 						codeConfiguration: {
 							codeConfigurationValues: {
-								startCommand: 'npm run backend',
-								buildCommand: 'npm i',
+								startCommand: 'npm run prod',
+								buildCommand: 'npm i && npm run build',
 								port: '8080',
 								runtime: 'NODEJS_16',
-								runtimeEnvironmentSecrets: [
-									{
-										name: 'mongoURI',
-										value: mongoURISecret.secretArn,
-									},
-								],
 								runtimeEnvironmentVariables: [
 									{
 										name: 'USER_POOL_ID',
@@ -83,6 +104,10 @@ export class AppRunnerStack extends Stack {
 										name: 'USER_POOL_CLIENT_ID',
 										value: props.userPoolClientId,
 									},
+									{
+										name: 'TABLE_NAME',
+										value: props.dynamodbTableName,
+									},
 								],
 							},
 							configurationSource: 'API',
@@ -90,7 +115,7 @@ export class AppRunnerStack extends Stack {
 						repositoryUrl: config.backend.repository_url,
 						sourceCodeVersion: {
 							type: 'BRANCH',
-							value: 'main',
+							value: 'dynamodb-migration',
 						},
 					},
 				},

@@ -7,6 +7,7 @@ import { CognitoStack } from '../lib/cognito-stack';
 import { StorageStack } from '../lib/storage-stack';
 import { ObservabilityStack } from '../lib/observability-stack';
 import { AppRunnerStack } from '../lib/apprunner-stack';
+import { DynamoDBStack } from '../lib/dynamodb-stack';
 
 const app = new cdk.App();
 
@@ -19,10 +20,16 @@ const cognito = new CognitoStack(app, `${config.stage}-CognitoStack`, {
 	storageBucketARN: storage.bucketARN.value,
 });
 
+const dynamodb = new DynamoDBStack(app, `${config.stage}-DynamoDBStack`, {
+	stage: config.stage,
+});
+
 const appRunner = new AppRunnerStack(app, `${config.stage}-AppRunnerStack`, {
 	stage: config.stage,
 	userPoolClientId: cognito.userPoolClientId.value,
 	userPoolId: cognito.userPoolId.value,
+	dynamodbTableName: dynamodb.tableName.value,
+	dynamodbTableArn: dynamodb.tableArn.value,
 });
 
 const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
