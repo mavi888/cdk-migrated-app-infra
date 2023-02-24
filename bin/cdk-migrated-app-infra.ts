@@ -51,5 +51,6 @@ const observability = new ObservabilityStack(
 		serviceName: appRunner.serviceName.value,
 		serviceArn: appRunner.serviceArn.value,
 		serviceId: appRunner.serviceId.value,
+		dynamoDBTableName: dynamodb.tableName.value,
 	}
 );

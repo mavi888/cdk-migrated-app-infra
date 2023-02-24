@@ -29,18 +29,6 @@ export class AppRunnerStack extends Stack {
 	constructor(scope: Construct, id: string, props: AppRunnerStackProps) {
 		super(scope, id, props);
 
-		const mongoURISecret = Secret.fromSecretNameV2(this, 'secret', 'mongoURI');
-
-		const giveReadAccessToSecretPolicy = new PolicyDocument({
-			statements: [
-				new PolicyStatement({
-					resources: [config.backend['mongouri-secret-arn']],
-					actions: ['secretsmanager:GetSecretValue'],
-					effect: Effect.ALLOW,
-				}),
-			],
-		});
-
 		const giveCRUDAccessToDynamoTable = new PolicyDocument({
 			statements: [
 				new PolicyStatement({
@@ -72,15 +60,14 @@ export class AppRunnerStack extends Stack {
 				description: 'Default role for app runner instances',
 				assumedBy: new ServicePrincipal('tasks.apprunner.amazonaws.com'),
 				inlinePolicies: {
-					GiveReadAccessToSecret: giveReadAccessToSecretPolicy,
 					GiveCRUDAccessToTable: giveCRUDAccessToDynamoTable,
 				},
 			}
 		);
 
-		const appRunnerService1 = new CfnService(
+		const appRunnerService = new CfnService(
 			this,
-			`${props.stage}-AppRunnerService1`,
+			`${props.stage}-AppRunnerService`,
 			{
 				serviceName: `${props.stage}-AppRunnerService`,
 				sourceConfiguration: {
@@ -126,19 +113,19 @@ export class AppRunnerStack extends Stack {
 		);
 
 		this.url = new CfnOutput(this, 'ServiceURL', {
-			value: appRunnerService1.attrServiceUrl,
+			value: appRunnerService.attrServiceUrl,
 		});
 
 		this.serviceName = new CfnOutput(this, 'ServiceName', {
-			value: `${props.stage}-AppRunnerService1`,
+			value: `${props.stage}-AppRunnerService`,
 		});
 
 		this.serviceArn = new CfnOutput(this, 'ServiceArn', {
-			value: appRunnerService1.attrServiceArn,
+			value: appRunnerService.attrServiceArn,
 		});
 
 		this.serviceId = new CfnOutput(this, 'serviceId', {
-			value: appRunnerService1.attrServiceId,
+			value: appRunnerService.attrServiceId,
 		});
 	}
 }

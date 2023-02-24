@@ -8,6 +8,7 @@ interface ObservabilityStackProps extends StackProps {
 	readonly serviceName: string;
 	readonly serviceId: string;
 	readonly serviceArn: string;
+	readonly dynamoDBTableName: string;
 }
 
 export class ObservabilityStack extends Stack {
@@ -84,7 +85,7 @@ export class ObservabilityStack extends Stack {
 			})
 		);
 
-		//Widgets related to the Lambda function
+		//Widgets related to the AppRunner service
 		dashboard.addWidgets(
 			new GraphWidget({
 				title: 'AppRunner Requests and Responses',
@@ -166,6 +167,303 @@ export class ObservabilityStack extends Stack {
 						},
 						statistic: 'p99',
 						label: 'p99 Latency',
+						period: Duration.minutes(1),
+					}),
+				],
+			})
+		);
+
+		//Widgets related to the DynamoDB table
+		dashboard.addWidgets(
+			new GraphWidget({
+				title: 'Provisioned Capacity for table',
+				width: 12,
+				right: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+						},
+						statistic: 'sum',
+						label: 'Sum ProvisionedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+						},
+						statistic: 'sum',
+						label: 'Sum ConsumedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+				left: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+						},
+						statistic: 'sum',
+						label: 'Sum ProvisionedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+						},
+						statistic: 'sum',
+						label: 'Sum ConsumedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+			}),
+			new GraphWidget({
+				title: 'Provisioned Capacity For Index GSI1',
+				width: 12,
+				right: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI1',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI1 ProvisionedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI1',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI1 ConsumedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+				left: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI1',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI1 ProvisionedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI1',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI1 ConsumedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+			}),
+			new GraphWidget({
+				title: 'Provisioned Capacity For Index GSI2',
+				width: 12,
+				right: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI2',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI2 ProvisionedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI2',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI2 ConsumedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+				left: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI2',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI2 ProvisionedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI2',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI2 ConsumedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+			}),
+			new GraphWidget({
+				title: 'Provisioned Capacity For Index GSI3',
+				width: 12,
+				right: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI3',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI3 ProvisionedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedWriteCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI3',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI3 ConsumedWriteCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+				left: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ProvisionedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI3',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI3 ProvisionedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ConsumedReadCapacityUnits',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI3',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI3 ConsumedReadCapacityUnits',
+						period: Duration.minutes(1),
+					}),
+				],
+			}),
+			new GraphWidget({
+				title: 'Latency for table operations',
+				width: 12,
+				left: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'SuccessfulRequestLatency',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							Operation: 'GetItem',
+						},
+						statistic: 'p99',
+						label: 'p99 GetItem SuccessfulRequestLatency',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'SuccessfulRequestLatency',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							Operation: 'Query',
+						},
+						statistic: 'p99',
+						label: 'p99 Query SuccessfulRequestLatency',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'SuccessfulRequestLatency',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							Operation: 'UpdateItem',
+						},
+						statistic: 'p99',
+						label: 'p99 UpdateItem SuccessfulRequestLatency',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'SuccessfulRequestLatency',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							Operation: 'PutItem',
+						},
+						statistic: 'p99',
+						label: 'p99 PutItem SuccessfulRequestLatency',
+						period: Duration.minutes(1),
+					}),
+				],
+			}),
+			new GraphWidget({
+				title: 'Read throttles for Indexes',
+				width: 12,
+				left: [
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ReadThrottleEvents',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI1',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI1 ReadThrottleEvents',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ReadThrottleEvents',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI2',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI2 ReadThrottleEvents',
+						period: Duration.minutes(1),
+					}),
+					new Metric({
+						namespace: 'AWS/DynamoDB',
+						metricName: 'ReadThrottleEvents',
+						dimensionsMap: {
+							TableName: props.dynamoDBTableName,
+							GlobalSecondaryIndexName: 'GSI3',
+						},
+						statistic: 'sum',
+						label: 'Sum GSI3 ReadThrottleEvents',
 						period: Duration.minutes(1),
 					}),
 				],

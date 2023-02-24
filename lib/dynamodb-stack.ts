@@ -38,6 +38,8 @@ export class DynamoDBStack extends Stack {
 				name: 'GSI1SK',
 				type: AttributeType.STRING,
 			},
+			readCapacity: 10,
+			writeCapacity: 30,
 		};
 
 		table.addGlobalSecondaryIndex(gsi1);
@@ -52,6 +54,8 @@ export class DynamoDBStack extends Stack {
 				name: 'GSI2SK',
 				type: AttributeType.NUMBER,
 			},
+			readCapacity: 100,
+			writeCapacity: 10,
 		};
 
 		table.addGlobalSecondaryIndex(gsi2);
@@ -66,6 +70,8 @@ export class DynamoDBStack extends Stack {
 				name: 'GSI3SK',
 				type: AttributeType.STRING,
 			},
+			readCapacity: 10,
+			writeCapacity: 10,
 		};
 
 		table.addGlobalSecondaryIndex(gsi3);
