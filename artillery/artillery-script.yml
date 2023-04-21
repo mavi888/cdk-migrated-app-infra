@@ -1,0 +1,39 @@
+# Load test to test the basic flow without authentication of browsing the main page and products
+# For this test we asume that 3 phases
+# Phase 1 - Warm up, will recieve 1 new users per second during a minute.
+# Phase 2 - Ramp up load will recieve ramp up the users from 1 to 3 per second in one minute.
+# Phase 3 - Sustained load will have 3 users per second during 2 minutes
+# This ends up in around 1800 requests made 6 minutes
+config:
+  target: '<URL>'
+  phases:
+    - name: Warm up
+      duration: 60
+      arrivalRate: 1
+    - name: Ramp up load
+      duration: 180
+      arrivalRate: 1
+      rampTo: 3
+    - name: Sustained load
+      duration: 120
+      arrivalRate: 3
+scenarios:
+  - name: 'Test basic navigation flow'
+    flow:
+      - post:
+          url: '/api/product/getProducts/'
+      - think: 10
+      - get:
+          url: '/api/product/products_by_id?id=01GVQW8M0RT2KPJB39NP9M1N39&type=single'
+      - think: 10
+      - post:
+          url: '/api/product/getProducts/'
+      - think: 10
+      - get:
+          url: '/api/product/products_by_id?id=01GVQW8K62QJJM6WXCYZWM2EEB&type=single'
+      - think: 10
+      - post:
+          url: '/api/product/getProducts/'
+      - think: 10
+      - get:
+          url: '/api/product/products_by_id?id=01GVQW8KMK8CE0PVRAKS39C85P&type=single'

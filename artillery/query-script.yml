@@ -1,0 +1,52 @@
+# Load test to test the different queries without authentication of browsing the main page and products
+# For this test we asume that 3 phases
+# Phase 1 - Warm up, will recieve 1 new users per second during a minute.
+# Phase 2 - Ramp up load will recieve ramp up the users from 1 to 2 per second in one minute.
+# Phase 3 - Sustained load will have 2 users per second during 2 minutes
+# This ends up in around 1800 requests made 5 minutes
+
+config:
+  target: 'https://cif27vvwf3.eu-west-1.awsapprunner.com'
+  phases:
+    - name: Warm up
+      duration: 60
+      arrivalRate: 1
+    - name: Ramp up load
+      duration: 180
+      arrivalRate: 1
+      rampTo: 2
+    - name: Sustained load
+      duration: 120
+      arrivalRate: 2
+scenarios:
+  - name: 'Test different queries flow'
+    flow:
+      - post:
+          url: '/api/product/getProducts/'
+      - think: 10
+      # Search by category 0
+      - post:
+          url: '/api/product/getProducts/'
+          json:
+            filters: { 'category': [0], 'price': [] }
+      - think: 10
+      - post:
+          url: '/api/product/getProducts/'
+          json:
+            filters: { 'category': [], 'price': [0, 199] }
+      - think: 10
+      - post:
+          url: '/api/product/getProducts/'
+          json:
+            filters: { 'category': [], 'price': [], 'searchTerm': 'a' }
+      - think: 10
+      - post:
+          url: '/api/product/getProducts/'
+          json:
+            filters: { 'category': [], 'price': [], 'searchTerm': 'aw' }
+      - think: 10
+      - post:
+          url: '/api/product/getProducts/'
+          json:
+            filters: { 'category': [], 'price': [], 'searchTerm': 'aws' }
+      - think: 10

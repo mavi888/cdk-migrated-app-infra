@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import {
 	AttributeType,
 	GlobalSecondaryIndexProps,
+	StreamViewType,
 	Table,
 } from 'aws-cdk-lib/aws-dynamodb';
 
@@ -13,6 +14,7 @@ interface DynamoDBStackProps extends StackProps {
 export class DynamoDBStack extends Stack {
 	public readonly tableName: CfnOutput;
 	public readonly tableArn: CfnOutput;
+	public readonly streamArn: CfnOutput;
 
 	constructor(scope: Construct, id: string, props: DynamoDBStackProps) {
 		super(scope, id, props);
@@ -26,6 +28,7 @@ export class DynamoDBStack extends Stack {
 				name: 'SK',
 				type: AttributeType.STRING,
 			},
+			stream: StreamViewType.NEW_AND_OLD_IMAGES,
 		});
 
 		const gsi1: GlobalSecondaryIndexProps = {
@@ -38,8 +41,6 @@ export class DynamoDBStack extends Stack {
 				name: 'GSI1SK',
 				type: AttributeType.STRING,
 			},
-			readCapacity: 10,
-			writeCapacity: 30,
 		};
 
 		table.addGlobalSecondaryIndex(gsi1);
@@ -54,8 +55,6 @@ export class DynamoDBStack extends Stack {
 				name: 'GSI2SK',
 				type: AttributeType.NUMBER,
 			},
-			readCapacity: 100,
-			writeCapacity: 10,
 		};
 
 		table.addGlobalSecondaryIndex(gsi2);
@@ -70,8 +69,6 @@ export class DynamoDBStack extends Stack {
 				name: 'GSI3SK',
 				type: AttributeType.STRING,
 			},
-			readCapacity: 10,
-			writeCapacity: 10,
 		};
 
 		table.addGlobalSecondaryIndex(gsi3);
@@ -82,6 +79,10 @@ export class DynamoDBStack extends Stack {
 
 		this.tableArn = new CfnOutput(this, 'DynamoDBTableArn', {
 			value: table.tableArn,
+		});
+
+		this.streamArn = new CfnOutput(this, 'DynamoDBStreamArn', {
+			value: table.tableStreamArn || '',
 		});
 	}
 }

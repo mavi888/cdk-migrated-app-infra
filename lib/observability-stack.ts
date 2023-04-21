@@ -176,7 +176,7 @@ export class ObservabilityStack extends Stack {
 		//Widgets related to the DynamoDB table
 		dashboard.addWidgets(
 			new GraphWidget({
-				title: 'Provisioned Capacity for table',
+				title: 'Capacity for table',
 				width: 12,
 				right: [
 					new Metric({
@@ -185,8 +185,8 @@ export class ObservabilityStack extends Stack {
 						dimensionsMap: {
 							TableName: props.dynamoDBTableName,
 						},
-						statistic: 'sum',
-						label: 'Sum ProvisionedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum ProvisionedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -195,8 +195,8 @@ export class ObservabilityStack extends Stack {
 						dimensionsMap: {
 							TableName: props.dynamoDBTableName,
 						},
-						statistic: 'sum',
-						label: 'Sum ConsumedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum ConsumedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
@@ -207,8 +207,8 @@ export class ObservabilityStack extends Stack {
 						dimensionsMap: {
 							TableName: props.dynamoDBTableName,
 						},
-						statistic: 'sum',
-						label: 'Sum ProvisionedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum ProvisionedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -217,14 +217,14 @@ export class ObservabilityStack extends Stack {
 						dimensionsMap: {
 							TableName: props.dynamoDBTableName,
 						},
-						statistic: 'sum',
-						label: 'Sum ConsumedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum ConsumedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
 			}),
 			new GraphWidget({
-				title: 'Provisioned Capacity For Index GSI1',
+				title: 'Capacity For Index GSI1',
 				width: 12,
 				right: [
 					new Metric({
@@ -234,8 +234,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI1',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI1 ProvisionedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI1 ProvisionedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -245,8 +245,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI1',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI1 ConsumedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI1 ConsumedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
@@ -258,8 +258,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI1',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI1 ProvisionedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI1 ProvisionedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -269,14 +269,14 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI1',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI1 ConsumedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI1 ConsumedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
 			}),
 			new GraphWidget({
-				title: 'Provisioned Capacity For Index GSI2',
+				title: 'Capacity For Index GSI2',
 				width: 12,
 				right: [
 					new Metric({
@@ -286,8 +286,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI2',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI2 ProvisionedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI2 ProvisionedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -297,8 +297,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI2',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI2 ConsumedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI2 ConsumedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
@@ -310,8 +310,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI2',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI2 ProvisionedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI2 ProvisionedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -321,14 +321,14 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI2',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI2 ConsumedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI2 ConsumedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
 			}),
 			new GraphWidget({
-				title: 'Provisioned Capacity For Index GSI3',
+				title: 'Capacity For Index GSI3',
 				width: 12,
 				right: [
 					new Metric({
@@ -338,8 +338,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI3',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI3 ProvisionedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI3 ProvisionedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -349,8 +349,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI3',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI3 ConsumedWriteCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI3 ConsumedWriteCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
@@ -362,8 +362,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI3',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI3 ProvisionedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI3 ProvisionedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 					new Metric({
@@ -373,8 +373,8 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI3',
 						},
-						statistic: 'sum',
-						label: 'Sum GSI3 ConsumedReadCapacityUnits',
+						statistic: 'Maximum',
+						label: 'Maximum GSI3 ConsumedReadCapacityUnits',
 						period: Duration.minutes(1),
 					}),
 				],
@@ -440,7 +440,7 @@ export class ObservabilityStack extends Stack {
 							TableName: props.dynamoDBTableName,
 							GlobalSecondaryIndexName: 'GSI1',
 						},
-						statistic: 'sum',
+						statistic: 'Maximum',
 						label: 'Sum GSI1 ReadThrottleEvents',
 						period: Duration.minutes(1),
 					}),
