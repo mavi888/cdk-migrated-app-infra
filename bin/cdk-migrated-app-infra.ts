@@ -10,22 +10,22 @@ import { ObservabilityStack } from '../lib/observability-stack';
 
 const app = new cdk.App();
 
-const storage = new StorageStack(app, `${config.stage}-BackendStorageStack`, {
+const storage = new StorageStack(app, `${config.stage}BackendStorageStack`, {
 	stage: config.stage,
 });
 
-const cognito = new CognitoStack(app, `${config.stage}-CognitoStack`, {
+const cognito = new CognitoStack(app, `${config.stage}CognitoStack`, {
 	stage: config.stage,
 	storageBucketARN: storage.bucketARN.value,
 });
 
-const backendApp = new BackendAppStack(app, `${config.stage}-BackendAppStack`, {
+const backendApp = new BackendAppStack(app, `${config.stage}BackendAppStack`, {
 	stage: config.stage,
 	userPoolClientId: cognito.userPoolClientId.value,
 	userPoolId: cognito.userPoolId.value,
 });
 
-const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
+const amplifyApp = new AmplifyStack(app, `${config.stage}AmplifyStack`, {
 	stage: config.stage,
 	serverURL: backendApp.functionUrl.value,
 	identityPoolId: cognito.identityPoolId.value,
@@ -37,7 +37,7 @@ const amplifyApp = new AmplifyStack(app, `${config.stage}-AmplifyStack`, {
 
 const observability = new ObservabilityStack(
 	app,
-	`${config.stage}-MERNObservabilityStack`,
+	`${config.stage}MERNObservabilityStack`,
 	{
 		stage: config.stage,
 		amplifyAppId: amplifyApp.amplifyAppId.value,
